@@ -1,0 +1,23 @@
+node_modules/
+pnpm-lock.yaml
+.DS_Store
+*.log
+
+# 运行时数据（含签名密钥、TOTP 绑定、审计 IP）
+store.json
+sessions.json
+audit.jsonl
+
+# 凭据与配置
+.env
+.env.*
+*.pem
+*.key
+.cloudflared/
+config.yml
+
+# 其它
+*.sqlite
+*.db
+dist/
+*.tgz
