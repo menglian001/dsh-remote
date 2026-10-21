@@ -41,7 +41,7 @@
 ### 1. Install
 
 ```sh
-dsh plugin --profile web add @xgone/dsh-remote
+dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh1
 ```
 
 ### 2. Restart `dsh web`
@@ -54,7 +54,7 @@ dsh web
 
 ### 3. Create the first admin
 
-Open `http://127.0.0.1:3080` in a local browser. The first visit enters bootstrap mode: enter a username and password (at least 6 characters) to create the first admin, then you are signed in automatically.
+Open `http://127.0.0.1:3080` in a local browser. The first visit enters bootstrap mode: enter a username and password (at least 10 characters) to create the first admin, then you are signed in automatically.
 
 > Server without a local browser? See [headless servers](#headless-servers-no-local-browser).
 
@@ -102,7 +102,6 @@ Edit the `config` of the `remote` row in `~/.dsh/profiles/web/cordis.patch.yml`:
     enabled: true          # false = disable the gate (escape hatch if locked out)
     session:
       secure: false        # set true for HTTPS deployments
-    adminOnly: true        # false = enable admin/user/guest roles
     bootstrap:             # optional: only while the account store is empty
       username: admin
       password: 'replace-with-a-strong-password'
@@ -112,7 +111,7 @@ Edit the `config` of the `remote` row in `~/.dsh/profiles/web/cordis.patch.yml`:
 |---|---:|---|
 | `enabled` | `true` | Enable or disable the login gate; restart `dsh web` after changing it. |
 | `session.secure` | `false` | Set `true` for HTTPS so session cookies are sent only over secure connections. |
-| `adminOnly` | `true` | Keep the deployment admin-only; set `false` to enable multi-account roles. |
+| `adminOnly` | `true` | Fixed to `true` (single-admin mode); not configurable in this build. |
 | `bootstrap` | unset | Provision the first admin on a headless server; remove the plaintext password after the first login. |
 
 See [docs/REFERENCE.md](docs/REFERENCE.md#13-full-configuration-reference) for sessions, MFA, rate limiting, gzip, the file panel, allowed roots, and all other options.
