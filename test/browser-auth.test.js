@@ -22,7 +22,7 @@ import {
 	hasLiveDshAuthCookie
 } from "../lib/index.js";
 
-// Live-captured interop vector (see file header).
+// Synthetic interop vector: a random secret plus a cookie signed with it.
 const SECRET_B64 = "iVCvY1ZwdiQziEGxChjPRJP-gRTjtOSYiUz0w6Pnpww";
 const CORE_AUTHORITY = "127.0.0.1:4123";
 const CORE_COOKIE_NAME = "dsh-auth-YVtZjAk-O-As0CPrK4Smou5Cy2QJPP7nYVHErLbFhXo";
