@@ -221,7 +221,7 @@ dsh 进程工作目录、旧配置 `files.roots`）只读并列展示，不受�
       secure: false          # HTTPS 部署建议 true
       sameSite: lax
     enforceRoles: true       # admin/user/guest 方法级权限
-    adminOnly: true          # 仅管理员账号（默认）；false 启用多角色与账号管理
+    adminOnly: true          # 固定为 true（单管理员模式），不可配置
     trustProxy: true         # 认证后归一化 Host/Origin（见 §5）
     bootstrap:               # 无浏览器服务器预置首个管理员（账号库为空时生效，幂等）
       username: admin
@@ -260,6 +260,8 @@ dsh 进程工作目录、旧配置 `files.roots`）只读并列展示，不受�
 | POST | `/auth/mfa/verify` | 用动态码确认 pending 设置 |
 | POST | `/auth/mfa/disable` | 关闭本账号 MFA（需密码 + 有效动态码/备用码） |
 | POST | `/auth/accounts` | 管理员：`{action: list\|upsert\|remove\|disable-mfa, ...}` |
+| POST | `/auth/audit` | 管理员：`{action: "list", limit?, event?}` 读取审计日志（新的在前） |
+| POST | `/auth/sessions` | 管理员：`{action: "list"\|"revoke"\|"revoke-all", sid?, username?}` 在线设备管理 |
 | GET | `/auth/file` | 远程文件面板的流式文件读取（受允许目录白名单约束）；`format=json` 供面板的目录浏览；`format=text` + `.docx` 返回服务端提取的纯文本（ZIP 解析 + zlib 解压 + XML 剥离，≤64MB 源 / 2MB 文本，结构异常返回 415 让面板回落下载卡片） |
 
 ## 15. 已处理的 DSH 远程浏览器怪癖（settings memory 模式系列）
