@@ -30,7 +30,7 @@
 
 - **Login gate**: unauthenticated requests to every path are sent to the login page; `/api` and WebSocket traffic require a valid session. Passwords are scrypt-hashed, failed logins are rate limited, and the first admin is loopback-only.
 - **MFA / TOTP**: works with Google Authenticator, 1Password, Authy, and other standard authenticators; supports QR binding and 10 one-time backup codes. An admin can disable MFA for an account.
-- **Sessions and roles**: signed session cookies; admin-only mode by default, with optional `admin` / `user` / `guest` roles.
+- **Sessions and roles**: signed, persistent session cookies. This hardened build only supports admin-only mode; non-admin roles cannot be enabled.
 - **Remote file panel**: preview code, Markdown, images, PDF, video, audio, text, directories, and extracted `.docx` text in a right-side panel. Unsupported files download directly. Only the DSH home and working directories are readable by default; admins can add allowed roots.
 - **Remote access**: works behind nginx, SSH tunnels, Tailscale, Frp, Cloudflare Tunnel, and similar transports with end-to-end WebSocket events.
 - **Browser-native workspace flow**: selecting or creating a workspace uses an in-browser directory dialog instead of opening a host OS file picker.
@@ -38,10 +38,12 @@
 
 ## Getting started
 
+The hardened `0.3.5-dsh2` build has been verified with both handler and Fetch `resource` routes in DSH `0.2.2-rc.3`. Upgrading does not reset accounts, MFA, or session data; restart `dsh web` after installation.
+
 ### 1. Install
 
 ```sh
-dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh1
+dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh2
 ```
 
 ### 2. Restart `dsh web`

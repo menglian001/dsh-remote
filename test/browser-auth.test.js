@@ -10,7 +10,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { randomBytes, createHmac } from "node:crypto";
 import {
 	BROWSER_SESSION_RECORD_KEY,
 	canonicalAuthority,
@@ -118,6 +118,25 @@ test("cookieValueOf reads exact names out of a raw Cookie header", () => {
 	assert.equal(cookieValueOf("x_dsh_session=v1.x.y", "dsh_session"), null);
 	assert.equal(cookieValueOf("", "dsh_session"), null);
 	assert.equal(cookieValueOf(undefined, "dsh_session"), null);
+});
+
+test("v2 cookies require a signed matching version and a nonempty Peer id", () => {
+  const secret = randomBytes(32);
+  const authority = "fixture.example";
+  const now = Date.now();
+  const good = { version: 2, authority, id: "fixture-peer", issuedAt: now, expiresAt: now + 60000 };
+  const sign = (payload, prefix = "v2") => {
+    const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
+    return prefix + "." + body + "." + createHmac("sha256", secret).update(body).digest("base64url");
+  };
+  assert.equal(decodeDshAuthCookie(sign(good), secret, authority, now + 1).id, "fixture-peer");
+  assert.equal(decodeDshAuthCookie(sign(good, "v1"), secret, authority, now + 1), null);
+  for (const id of [undefined, "", 123, null]) {
+    assert.equal(decodeDshAuthCookie(sign({ ...good, id }), secret, authority, now + 1), null);
+  }
+  assert.equal(decodeDshAuthCookie(sign(good), randomBytes(32), authority, now + 1), null);
+  assert.equal(decodeDshAuthCookie(sign(good), secret, "foreign.example", now + 1), null);
+  assert.equal(decodeDshAuthCookie(sign(good), secret, authority, now + 60001), null);
 });
 
 test("the credential record key targets client-connection's browser session", () => {

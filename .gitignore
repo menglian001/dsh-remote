@@ -21,3 +21,18 @@ config.yml
 *.db
 dist/
 *.tgz
+
+# Never publish operator-local runtime data or backups
+.dsh/
+auth/
+.ssh/
+.secrets/
+backups/
+.local-install-backup/
+*.jsonl
+*.bak
+*.backup
+*.sqlite-*
+.cookies*
+cookies.txt
+.credentials*
