@@ -38,12 +38,14 @@
 
 ## Getting started
 
-The hardened `0.3.5-dsh2` build has been verified with both handler and Fetch `resource` routes in DSH `0.2.2-rc.3`. Upgrading does not reset accounts, MFA, or session data; restart `dsh web` after installation.
+The hardened `0.3.5-dsh3` build has been verified with both handler and Fetch `resource` routes in DSH `0.2.2-rc.3`. Upgrading does not reset accounts, MFA, or session data; restart `dsh web` after installation.
+
+This release only fixes authentication boundaries: revoked sessions and credential changes close existing WebSockets, in-flight verification counts against the existing attempt limit, and successfully used TOTP counters are persisted to prevent reuse with fresh challenges. Enrollment confirmation consumes its code too; wait for the next authenticator code before another verification. Session lifetime and the no-idle-timeout policy are unchanged.
 
 ### 1. Install
 
 ```sh
-dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh2
+dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh3
 ```
 
 ### 2. Restart `dsh web`

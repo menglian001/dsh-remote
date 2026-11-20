@@ -2,6 +2,13 @@
 
 用户指南见 [README](README.md)；实现细节见 [docs/REFERENCE.md](docs/REFERENCE.md)。
 
+## 0.3.5-dsh3 (2026-11-20)
+
+- Close accepted WebSocket transports on device/session revocation, account credential or identity changes, expiry, capacity eviction, and plugin disposal. No idle timeout is added.
+- Reserve credential and source attempt buckets before asynchronous verification; release on handler completion, errors, and aborted requests without freeing pending work early.
+- Persist successfully consumed TOTP counters and reject their reuse across new challenges or restarts; preserve one-time challenge and backup-code behavior.
+- Add isolated lifecycle, concurrency, persistence-failure, and regression coverage. No new user-facing features, API routes, configuration options, or package dependencies.
+
 ## 0.3.5-dsh2 (2026-11-20)
 
 - 适配 DSH `0.2.2-rc.3` 的 Fetch `resource` 路由：首页恢复账号登录页，已有及后续注册的资源路由均经过门禁。

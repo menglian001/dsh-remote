@@ -35,14 +35,16 @@ DSH（DeepSeek Harness）Web 面板的远程访问鉴权插件：登录门禁、
 
 ## 快速开始
 
-当前加固版 `0.3.5-dsh2` 已验证兼容 DSH `0.2.2-rc.3` 的函数式及 Fetch `resource` 路由。升级不会重置账号、MFA 或会话数据；安装后仍需重启 `dsh web`。
+当前加固版 `0.3.5-dsh3` 已验证兼容 DSH `0.2.2-rc.3` 的函数式及 Fetch `resource` 路由。升级不会重置账号、MFA 或会话数据；安装后仍需重启 `dsh web`。
+
+本版只修复认证边界：吊销或凭据变更会关闭对应的已建立 WebSocket；并发验证计入原有限流上限；成功使用的动态验证码时间步会持久化，不能在新登录挑战中重用。绑定确认也会消费当次验证码，需要再次验证时请等待验证器生成下一个码。原会话期限和无闲置超时策略保持不变。
 
 ### 1. 安装
 
 未发布到 npm，请从本仓库安装：
 
 ```sh
-dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh2
+dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh3
 ```
 
 或在 profile 的 `package.json` 里声明：
@@ -50,7 +52,7 @@ dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh2
 ```json
 {
   "dependencies": {
-    "@xgone/dsh-remote": "github:menglian001/dsh-remote#v0.3.5-dsh2"
+    "@xgone/dsh-remote": "github:menglian001/dsh-remote#v0.3.5-dsh3"
   }
 }
 ```
@@ -60,10 +62,10 @@ dsh plugin --profile web add github:menglian001/dsh-remote#v0.3.5-dsh2
 确认装的是加固版：
 
 ```sh
-grep -c 'dsh2-hardened' ~/.dsh/profiles/web/node_modules/@xgone/dsh-remote/lib/index.js
+grep -c 'dsh3-hardened' ~/.dsh/profiles/web/node_modules/@xgone/dsh-remote/lib/index.js
 ```
 
-输出 `1` 表示正确。启动日志末尾也会带 `[build dsh2-hardened]`。
+输出 `1` 表示正确。启动日志末尾也会带 `[build dsh3-hardened]`。
 
 ### 2. 重启 `dsh web`
 
@@ -160,7 +162,7 @@ server {
 |---|---|
 | 安装后没有登录页 | 重启 `dsh web`；确认 bundles 列表里有 `@xgone/dsh-remote`。 |
 | 创建管理员时报 403 | 首个管理员仅限本机创建：在本机浏览器操作，或通过 `ssh -L` 访问 `127.0.0.1`；无本地浏览器使用 `bootstrap`。 |
-| 加固失效 | 依赖被改回了 npm 源。改回 `github:menglian001/dsh-remote#v0.3.5-dsh2` 后重装。 |
+| 加固失效 | 依赖被改回了 npm 源。改回 `github:menglian001/dsh-remote#v0.3.5-dsh3` 后重装。 |
 | 被锁在门外 | 将 `cordis.patch.yml` 的 `enabled` 设为 `false` 后重启；或删除 `$DSH_HOME/auth/store.json` 重新引导。 |
 | 忘记 MFA / 丢手机 | 用备用码登录；都丢了就手改 `$DSH_HOME/auth/store.json` 清掉该账号的 `totp` 字段。 |
 | 文件面板提示 `outside-roots` | 进入 **设置 → 登录与账号 → 允许的目录** 添加该目录，立即生效，无需重启。 |
